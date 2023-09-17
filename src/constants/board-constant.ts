@@ -1,4 +1,4 @@
-import {width} from '../utils/scale';
+import { width } from "../utils";
 
 const noOfRows = 3;
 const noOfColumns = 3;

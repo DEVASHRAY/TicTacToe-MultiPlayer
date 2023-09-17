@@ -5,11 +5,14 @@ import {
   GetBoxStyleProps,
   GridProps,
 } from '../interface/board-interface';
-import {color, rgba} from '../../utils/color';
-import USER_X_SVG from '../../svg/user-x';
-import USER_O_SVG from '../../svg/user-o';
-import {BOARD_GRID_TYPE, USER_TYPE} from '../../enums/board-grid-type';
-import {gridSize, noOfColumns, spacing} from '../../constants/board-constant';
+import {BOARD_GRID_TYPE, USER_TYPE} from '../../../enums/board-grid-type';
+import {
+  gridSize,
+  noOfColumns,
+  spacing,
+} from '../../../constants/board-constant';
+import {color, rgba} from '../../../utils';
+import {USER_O_SVG, USER_X_SVG} from '../../../svg';
 
 export default function Grid({
   id,

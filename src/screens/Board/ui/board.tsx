@@ -1,11 +1,11 @@
 import {View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {Grid} from './';
-import {maxBoardSize, noOfRows} from '../../constants/board-constant';
+import {maxBoardSize, noOfRows} from '../../../constants/board-constant';
 import {GetBoxTypeProps} from '../interface/board-interface';
-import {BOARD_GRID_TYPE, USER_TYPE} from '../../enums/board-grid-type';
-import {getRowColGridValue} from '../../helpers/get-row-col-grid-value';
-import {checkWinner} from '../../helpers/winner';
+import {BOARD_GRID_TYPE, USER_TYPE} from '../../../enums/board-grid-type';
+import {getRowColGridValue} from '../../../helpers/get-row-col-grid-value';
+import {checkWinner} from '../../../helpers/winner';
 
 const initialGridData = Array.from(
   {length: noOfRows * noOfRows},

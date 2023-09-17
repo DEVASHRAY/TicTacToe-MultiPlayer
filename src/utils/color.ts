@@ -4,6 +4,8 @@ export const color = {
   '#12161F': '#12161F',
   '#212835': '#212835',
   '#0C1017': '#0C1017',
+  '#ADADAD': '#ADADAD',
+  '#000000': '#000000',
 };
 
 export const rgba = {

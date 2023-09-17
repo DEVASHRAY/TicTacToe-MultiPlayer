@@ -1,12 +1,12 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
-import {Board} from './Board/ui';
 import {color} from './utils/color';
+import {Room} from './screens/room/ui';
 
 export default function AppContent() {
   return (
     <View style={[styles.appContainer]}>
-      <Board />
+      <Room />
     </View>
   );
 }
