@@ -1,4 +1,11 @@
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  AppState,
+  AppStateStatus,
+} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Grid} from './';
 import {maxBoardSize, noOfRows} from '../../../constants/board-constant';
@@ -6,7 +13,7 @@ import {GetBoxTypeProps} from '../interface/board-interface';
 import {BOARD_GRID_TYPE, USER_TYPE} from '../../../enums/board-grid-type';
 import {getRowColGridValue} from '../../../helpers/get-row-col-grid-value';
 import {checkWinner} from '../../../helpers/winner';
-import {useRoute} from '@react-navigation/native';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 import {AppNavigatorScreenRoute} from '../../../types/app-types';
 import {color, width} from '../../../utils';
 import {Copy} from '../../../svg';
@@ -21,8 +28,14 @@ export default function Board() {
   const {params: {roomId = '', userType} = {}} =
     useRoute<AppNavigatorScreenRoute<'GameBoard'>>();
 
-  const {showLoader, updateMove, resetBoard} = boardVM();
+  const {showLoader, updateMove, resetBoard, updateUserActiveStatus} =
+    boardVM();
 
+  const isFocused = useIsFocused();
+
+  const [appState, setAppState] = useState<AppStateStatus>(
+    AppState.currentState,
+  );
   const [boardData, setBoardData] = useState<{
     [key: string]: BOARD_GRID_TYPE | USER_TYPE;
   }>({});
@@ -30,8 +43,47 @@ export default function Board() {
   const [gameOver, setGameOver] = useState(false);
   const [infoText, setInfoText] = useState('Loading');
   const [descriptionText, setDescriptionText] = useState('');
+  const [isBothUsersActive, setIsBothUsersActive] = useState(false);
 
-  const disableMove = userType !== currentMove;
+  const disableMove = userType !== currentMove || !isBothUsersActive;
+
+  const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+    setAppState(nextAppState);
+
+    let activeStatus = false;
+
+    if (nextAppState === 'active' && isFocused) {
+      activeStatus = true;
+    } else {
+      activeStatus = false;
+    }
+
+    await updateUserActiveStatus({
+      activeStatus: activeStatus,
+      roomId,
+      userType:
+        userType === USER_TYPE.USER_X ? 'isUser1active' : 'isUser2active',
+    });
+  };
+
+  useEffect(() => {
+    // Subscribe to app state changes
+    const appStateListener = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
+    // Clean up the subscription when the component unmounts
+    return async () => {
+      await updateUserActiveStatus({
+        activeStatus: false,
+        roomId,
+        userType:
+          userType === USER_TYPE.USER_X ? 'isUser1active' : 'isUser2active',
+      });
+      appStateListener.remove(); // Remove the listener
+    };
+  }, [isFocused]);
 
   useEffect(() => {
     const subscriber = firestore()
@@ -43,8 +95,12 @@ export default function Board() {
             currentMove: updatedCurrentMove = BOARD_GRID_TYPE.EMPTY,
             moves = {},
             playAgain = false,
+            isUser1active = false,
+            isUser2active = false,
           } = {},
         } = documentSnapshot?.data() || {};
+
+        setIsBothUsersActive(isUser1active && isUser2active);
 
         let isWinner = checkWinner({updatedBoardData: moves, currentMove});
 
@@ -73,6 +129,9 @@ export default function Board() {
 
     if (Object.entries(boardData || {}).length <= 0) {
       text = 'Loading';
+    } else if (!isBothUsersActive) {
+      text = 'Player 2 Disconnected';
+      descriptionText = 'Waiting for other player to join...';
     } else if (gameOver && !disableMove) {
       text = 'You Won';
       descriptionText = 'Congratulations';
@@ -97,6 +156,13 @@ export default function Board() {
     setInfoText(text);
     setDescriptionText(descriptionText);
   }, [boardData, gameOver]);
+
+  useEffect(() => {
+    (async () => {
+      console.log('isFocused', isFocused);
+      await updateUserActiveStatus({roomId, status: isFocused});
+    })();
+  }, [isFocused]);
 
   const handleGridPress = async ({id}: GetBoxTypeProps) => {
     const {key} = getRowColGridValue({id});

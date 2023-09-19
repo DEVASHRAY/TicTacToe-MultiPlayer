@@ -3,6 +3,7 @@ import {
   FetchBoardDataProps,
   ResetBoardProps,
   UpdateMoveProps,
+  UpdateUserActiveStatus,
 } from '../interface/board-interface';
 import {firestore} from '../../../firebase';
 import {FIREBASE_COLLECTION, USER_TYPE} from '../../../enums';
@@ -70,6 +71,21 @@ export default function boardVM() {
     return isMoveUpdated;
   };
 
+  const updateUserActiveStatus = async ({
+    roomId,
+    userType,
+    activeStatus,
+  }: UpdateUserActiveStatus) => {
+    try {
+      await firestore()
+        .collection(FIREBASE_COLLECTION.ROOM)
+        .doc(roomId)
+        .update({[`boardData.${userType}`]: activeStatus});
+    } catch (error) {
+      console.log('Error in updateUserActiveStatus Fn ', error);
+    }
+  };
+
   const resetBoard = async ({roomId, currentMove}: ResetBoardProps) => {
     let isBoardResetSuccessfull = false;
     try {
@@ -81,12 +97,10 @@ export default function boardVM() {
         .collection(FIREBASE_COLLECTION.ROOM)
         .doc(roomId)
         .update({
-          boardData: {
-            currentMove:
-              randomValue % 2 === 0 ? USER_TYPE.USER_O : USER_TYPE.USER_X,
-            playAgain: true,
-            moves: initialMoves,
-          },
+          [`boardData.currentMove`]:
+            randomValue % 2 === 0 ? USER_TYPE.USER_O : USER_TYPE.USER_X,
+          [`boardData.moves`]: initialMoves,
+          [`boardData.playAgain`]: true,
         });
 
       isBoardResetSuccessfull = true;
@@ -101,5 +115,6 @@ export default function boardVM() {
     updateMove,
     fetchBoardData,
     resetBoard,
+    updateUserActiveStatus,
   };
 }

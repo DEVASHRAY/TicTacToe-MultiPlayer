@@ -18,7 +18,7 @@ import {USER_TYPE} from '../../../enums';
 export default function JoinRoom() {
   const navigation = useNavigation<AppNavigatorProps>();
 
-  const [roomId, setRoomId] = useState('a0772d0b-c11d-4367-9f39-00dbae23c005');
+  const [roomId, setRoomId] = useState('eb5727ba-773e-4468-bd92-5fdb1973ad16');
 
   const {joinRoom, showLoader} = roomVM();
 

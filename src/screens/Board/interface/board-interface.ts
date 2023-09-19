@@ -42,3 +42,9 @@ export interface ResetBoardProps {
   roomId: string;
   currentMove: USER_TYPE.USER_X | USER_TYPE.USER_O;
 }
+
+export interface UpdateUserActiveStatus {
+  roomId: string;
+  userType: string;
+  activeStatus: boolean;
+}

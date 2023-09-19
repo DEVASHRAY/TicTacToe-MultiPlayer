@@ -22,7 +22,13 @@ export default function roomVM() {
       const {_exists, _data}: any = seacrhRoomIdres || {};
 
       doesRoomExist = await new Promise(resolve => {
-        setTimeout(() => {
+        setTimeout(async () => {
+          await firestore()
+            .collection(FIREBASE_COLLECTION.ROOM)
+            .doc(roomId)
+            .update({
+              [`boardData.isUser2active`]: true,
+            });
           resolve(_exists || false);
         }, 1500);
       });
@@ -52,6 +58,8 @@ export default function roomVM() {
             currentMove: USER_TYPE.USER_X,
             playAgain: false,
             moves: initialMoves,
+            isUser1active: true,
+            isUser2active: false,
           },
         });
 
