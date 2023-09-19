@@ -18,12 +18,14 @@ import {USER_TYPE} from '../../../enums';
 export default function JoinRoom() {
   const navigation = useNavigation<AppNavigatorProps>();
 
-  const [roomId, setRoomId] = useState('eb5727ba-773e-4468-bd92-5fdb1973ad16');
+  const [roomId, setRoomId] = useState('4d8ff6c9-f278-42fd-933d-d58c3309b8c2');
 
   const {joinRoom, showLoader} = roomVM();
 
   const handleJoinRoom = async () => {
     let doesRoomExist = await joinRoom({roomId});
+
+    console.log('doesRoomExist', doesRoomExist);
 
     if (doesRoomExist) {
       navigation.navigate('GameBoard', {
@@ -37,7 +39,7 @@ export default function JoinRoom() {
       toastTitle: 'Please enter a correct Room Id',
     });
 
-    console.log('doesRoomExist', doesRoomExist);
+  
   };
 
   return (

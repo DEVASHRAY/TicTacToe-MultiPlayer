@@ -24,16 +24,17 @@ import boardVM from '../board-vm/board-vm';
 import {Button} from '../../../components';
 import Clipboard from '@react-native-community/clipboard';
 import {successToast} from '../../../helpers/toast';
+import getBoardInfo from '../../../helpers/get-board-info';
 
 export default function Board() {
   const navigation = useNavigation();
+
   const {params: {roomId = '', userType} = {}} =
     useRoute<AppNavigatorScreenRoute<'GameBoard'>>();
 
-  const {showLoader, updateMove, resetBoard, updateUserActiveStatus} =
-    boardVM();
-
   const isFocused = useIsFocused();
+
+  const {updateMove, resetBoard, updateUserActiveStatus} = boardVM();
 
   const [boardData, setBoardData] = useState<{
     [key: string]: BOARD_GRID_TYPE | USER_TYPE;
@@ -47,11 +48,6 @@ export default function Board() {
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
-  };
-
-  const handleConfirm = () => {
-    // Handle confirmation action here
-    toggleModal();
   };
 
   const handleBackPress = () => {
@@ -119,6 +115,13 @@ export default function Board() {
           } = {},
         } = documentSnapshot?.data() || {};
 
+        console.log(
+          'playAgainplayAgain',
+          playAgain,
+          isUser1active,
+          isUser2active,
+        );
+
         setIsBothUsersActive(isUser1active && isUser2active);
 
         let isWinner = checkWinner({updatedBoardData: moves, currentMove});
@@ -126,12 +129,15 @@ export default function Board() {
         console.log('isWinner', isWinner);
 
         if (isWinner) {
+          console.log('GAMEOVERRRRRRRRRRRRRRRRRRRRR 1111111', isWinner);
+
           setGameOver(isWinner);
           setBoardData(moves);
           return;
         }
 
         if (playAgain) {
+          console.log('GAMEOVERRRRRRRRRRRRRRRRRRRRR 222222', false);
           setGameOver(false);
         }
 
@@ -143,45 +149,21 @@ export default function Board() {
   }, [roomId, currentMove]);
 
   useEffect(() => {
-    let text = '';
-    let descriptionText = '';
+    const {descriptionText, isDraw, text} = getBoardInfo({
+      boardData,
+      isBothUsersActive,
+      disableMove,
+      gameOver,
+    });
 
-    if (Object.entries(boardData || {}).length <= 0) {
-      text = 'Loading';
-    } else if (!isBothUsersActive) {
-      text = 'Player 2 Disconnected';
-      descriptionText = 'Waiting for other player to join...';
-    } else if (gameOver && !disableMove) {
-      text = 'You Won';
-      descriptionText = 'Congratulations';
-    } else if (gameOver && disableMove) {
-      text = 'You Lost!';
-      descriptionText = 'Better luck next time';
-    } else if (!disableMove) {
-      text = 'Your Turn';
-    } else if (disableMove) {
-      text = 'Please Wait';
-    }
-
-    let isDraw = Object.values(boardData || {}).filter(
-      item => item === USER_TYPE.USER_O || item === USER_TYPE.USER_X,
-    );
     if (isDraw.length === 9) {
-      text = 'Draw!';
-      descriptionText = `It's a draw`;
+      console.log('GAMEOVERRRRRRRRRRRRRRRRRRRRR 3333333', true);
       setGameOver(true);
     }
 
     setInfoText(text);
     setDescriptionText(descriptionText);
-  }, [boardData, gameOver]);
-
-  useEffect(() => {
-    (async () => {
-      console.log('isFocused', isFocused);
-      await updateUserActiveStatus({roomId, status: isFocused});
-    })();
-  }, [isFocused]);
+  }, [boardData]);
 
   const handleGridPress = async ({id}: GetBoxTypeProps) => {
     const {key} = getRowColGridValue({id});

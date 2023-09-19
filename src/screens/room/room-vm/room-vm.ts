@@ -21,7 +21,11 @@ export default function roomVM() {
 
       const {_exists, _data}: any = seacrhRoomIdres || {};
 
-      doesRoomExist = await new Promise(resolve => {
+      console.log('_data', _data);
+
+      const {isUser1active, isUser2active} = _data?.boardData || {};
+
+      doesRoomExist = await new Promise((resolve, reject) => {
         setTimeout(async () => {
           await firestore()
             .collection(FIREBASE_COLLECTION.ROOM)
@@ -29,11 +33,16 @@ export default function roomVM() {
             .update({
               [`boardData.isUser2active`]: true,
             });
+          if (isUser1active && isUser2active) {
+            reject(false);
+            return;
+          }
           resolve(_exists || false);
         }, 1500);
       });
     } catch (err) {
       console.log('Error in joinRoom Fn', err);
+      return doesRoomExist;
     } finally {
       setShowLoader(false);
     }
