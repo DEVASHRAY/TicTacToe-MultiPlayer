@@ -50,6 +50,7 @@ export default function roomVM() {
         .set({
           boardData: {
             currentMove: USER_TYPE.USER_X,
+            playAgain: false,
             moves: initialMoves,
           },
         });

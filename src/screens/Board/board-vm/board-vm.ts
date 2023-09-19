@@ -1,11 +1,13 @@
 import {useState} from 'react';
 import {
   FetchBoardDataProps,
+  ResetBoardProps,
   UpdateMoveProps,
 } from '../interface/board-interface';
 import {firestore} from '../../../firebase';
 import {FIREBASE_COLLECTION, USER_TYPE} from '../../../enums';
 import {errorToast} from '../../../helpers/toast';
+import createBoardData from '../../../helpers/create-board-data';
 
 export default function boardVM() {
   const [showLoader, setShowLoader] = useState(false);
@@ -52,6 +54,7 @@ export default function boardVM() {
               ? USER_TYPE.USER_O
               : USER_TYPE.USER_X,
           [`boardData.moves.${gridKey}`]: currentMove,
+          [`boardData.playAgain`]: false,
         });
 
       console.log('isMoveUpdatedRes', isMoveUpdatedRes);
@@ -67,9 +70,36 @@ export default function boardVM() {
     return isMoveUpdated;
   };
 
+  const resetBoard = async ({roomId, currentMove}: ResetBoardProps) => {
+    let isBoardResetSuccessfull = false;
+    try {
+      let initialMoves = createBoardData();
+
+      let isResetRes = await firestore()
+        .collection(FIREBASE_COLLECTION.ROOM)
+        .doc(roomId)
+        .update({
+          boardData: {
+            currentMove:
+              currentMove === USER_TYPE.USER_X
+                ? USER_TYPE.USER_O
+                : USER_TYPE.USER_X,
+            playAgain: true,
+            moves: initialMoves,
+          },
+        });
+
+      isBoardResetSuccessfull = true;
+    } catch (error) {
+      console.log('Error in resetBoard Fn', error);
+    }
+    return isBoardResetSuccessfull;
+  };
+
   return {
     showLoader,
     updateMove,
     fetchBoardData,
+    resetBoard,
   };
 }

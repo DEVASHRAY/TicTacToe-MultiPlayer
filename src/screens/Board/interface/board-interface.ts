@@ -1,4 +1,4 @@
-import {BOARD_GRID_TYPE, USER_TYPE} from '../../enums/board-grid-type';
+import {BOARD_GRID_TYPE, USER_TYPE} from '../../../enums';
 
 export interface GetBoxStyleProps {
   boxType:
@@ -36,4 +36,9 @@ export interface UpdateMoveProps {
 
 export interface FetchBoardDataProps {
   roomId: string;
+}
+
+export interface ResetBoardProps {
+  roomId: string;
+  currentMove: USER_TYPE.USER_X | USER_TYPE.USER_O;
 }

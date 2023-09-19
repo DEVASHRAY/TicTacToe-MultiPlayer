@@ -17,6 +17,8 @@ export function checkWinner({
 }: CheckWinnerProps): boolean {
   let isWinner: boolean = false;
 
+
+
   winnerMoves.forEach((item: string[]) => {
     let isWinnerFound = checkIfKeysMatch(item, currentMove, updatedBoardData);
 
@@ -34,6 +36,7 @@ function checkIfKeysMatch(
   updatedBoardData = {},
 ) {
   return keys.every(key => {
+   
     return updatedBoardData[key] === currentMove;
   });
 }
