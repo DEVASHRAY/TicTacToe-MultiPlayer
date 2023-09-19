@@ -5,15 +5,16 @@ import {
   TouchableOpacity,
   AppState,
   AppStateStatus,
+  BackHandler,
 } from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Grid} from './';
+import {DropGameAlert, Grid} from './';
 import {maxBoardSize, noOfRows} from '../../../constants/board-constant';
 import {GetBoxTypeProps} from '../interface/board-interface';
 import {BOARD_GRID_TYPE, USER_TYPE} from '../../../enums/board-grid-type';
 import {getRowColGridValue} from '../../../helpers/get-row-col-grid-value';
 import {checkWinner} from '../../../helpers/winner';
-import {useIsFocused, useRoute} from '@react-navigation/native';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {AppNavigatorScreenRoute} from '../../../types/app-types';
 import {color, width} from '../../../utils';
 import {Copy} from '../../../svg';
@@ -25,6 +26,7 @@ import Clipboard from '@react-native-community/clipboard';
 import {successToast} from '../../../helpers/toast';
 
 export default function Board() {
+  const navigation = useNavigation();
   const {params: {roomId = '', userType} = {}} =
     useRoute<AppNavigatorScreenRoute<'GameBoard'>>();
 
@@ -33,9 +35,6 @@ export default function Board() {
 
   const isFocused = useIsFocused();
 
-  const [appState, setAppState] = useState<AppStateStatus>(
-    AppState.currentState,
-  );
   const [boardData, setBoardData] = useState<{
     [key: string]: BOARD_GRID_TYPE | USER_TYPE;
   }>({});
@@ -44,12 +43,34 @@ export default function Board() {
   const [infoText, setInfoText] = useState('Loading');
   const [descriptionText, setDescriptionText] = useState('');
   const [isBothUsersActive, setIsBothUsersActive] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleConfirm = () => {
+    // Handle confirmation action here
+    toggleModal();
+  };
+
+  const handleBackPress = () => {
+    setModalVisible(true);
+
+    return false;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [isModalVisible]);
 
   const disableMove = userType !== currentMove || !isBothUsersActive;
 
   const handleAppStateChange = async (nextAppState: AppStateStatus) => {
-    setAppState(nextAppState);
-
     let activeStatus = false;
 
     if (nextAppState === 'active' && isFocused) {
@@ -67,13 +88,11 @@ export default function Board() {
   };
 
   useEffect(() => {
-    // Subscribe to app state changes
     const appStateListener = AppState.addEventListener(
       'change',
       handleAppStateChange,
     );
 
-    // Clean up the subscription when the component unmounts
     return async () => {
       await updateUserActiveStatus({
         activeStatus: false,
@@ -264,6 +283,12 @@ export default function Board() {
           />
         )}
       </View>
+
+      <DropGameAlert
+        isVisible={isModalVisible}
+        onCancel={toggleModal}
+        onConfirm={() => navigation.goBack()}
+      />
     </View>
   );
 }

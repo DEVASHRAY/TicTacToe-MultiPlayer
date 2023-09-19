@@ -36,8 +36,8 @@ export default function LoaderOverlay({
     <Modal
       supportedOrientations={['landscape', 'portrait']}
       isVisible={visible}
-      backdropColor={color['#FFFFFF']}
-      backdropOpacity={0.15}
+      backdropColor={color['#212835']}
+      backdropOpacity={0.7}
       animationIn="slideInUp"
       animationOut="slideOutDown">
       <View
