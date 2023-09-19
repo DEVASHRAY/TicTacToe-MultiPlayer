@@ -75,15 +75,15 @@ export default function boardVM() {
     try {
       let initialMoves = createBoardData();
 
+      const randomValue = Math.floor(Math.random() * 101);
+
       let isResetRes = await firestore()
         .collection(FIREBASE_COLLECTION.ROOM)
         .doc(roomId)
         .update({
           boardData: {
             currentMove:
-              currentMove === USER_TYPE.USER_X
-                ? USER_TYPE.USER_O
-                : USER_TYPE.USER_X,
+              randomValue % 2 === 0 ? USER_TYPE.USER_O : USER_TYPE.USER_X,
             playAgain: true,
             moves: initialMoves,
           },

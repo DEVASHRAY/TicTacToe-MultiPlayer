@@ -14,6 +14,8 @@ import {firestore} from '../../../firebase';
 import {FIREBASE_COLLECTION} from '../../../enums';
 import boardVM from '../board-vm/board-vm';
 import {Button} from '../../../components';
+import Clipboard from '@react-native-community/clipboard';
+import {successToast} from '../../../helpers/toast';
 
 export default function Board() {
   const {params: {roomId = '', userType} = {}} =
@@ -122,7 +124,12 @@ export default function Board() {
         <Text
           numberOfLines={1}
           style={[styles.roomIdText]}>{`Room id : ${roomId}`}</Text>
-        <TouchableOpacity style={[styles.roomIdCopyButton]}>
+        <TouchableOpacity
+          style={[styles.roomIdCopyButton]}
+          onPress={() => {
+            Clipboard.setString(`${roomId}`);
+            successToast({toastDescription: 'Room Id copied to clipboard.'});
+          }}>
           <Copy />
         </TouchableOpacity>
       </View>
