@@ -29,13 +29,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: color['#ADADAD'],
-    backgroundColor: color['#0C1017'],
     overflow: 'hidden',
     borderRadius: 6,
   },
   buttonTitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: color['#ADADAD'],
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

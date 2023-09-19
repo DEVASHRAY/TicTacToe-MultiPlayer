@@ -17,11 +17,12 @@ import {USER_O_SVG, USER_X_SVG} from '../../../svg';
 export default function Grid({
   id,
   boxType,
-  cellData,
   handleGridPress,
+  disableMove,
 }: GridProps) {
   return (
     <TouchableOpacity
+      disabled={disableMove}
       style={[
         styles.boardBox,
         {width: gridSize, height: gridSize},
@@ -32,7 +33,7 @@ export default function Grid({
         },
         getBoxStyle({boxType: boxType}),
       ]}
-      onPress={() => handleGridPress({cellData, id})}>
+      onPress={() => handleGridPress({id})}>
       {renderUserMove({boxType})}
     </TouchableOpacity>
   );

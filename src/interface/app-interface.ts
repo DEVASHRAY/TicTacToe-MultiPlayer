@@ -13,7 +13,7 @@ export interface GetRowColGridValueInterface {
 
 export interface CheckWinnerProps {
   currentMove: USER_TYPE.USER_X | USER_TYPE.USER_O;
-  updatedBoardData: {[key: string]: USER_TYPE | BOARD_GRID_TYPE}[];
+  updatedBoardData: {[key: string]: USER_TYPE | BOARD_GRID_TYPE};
 }
 
 export interface CellDataInterface {

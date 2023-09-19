@@ -11,7 +11,7 @@ export default function LoaderOverlay({
   customIndicator,
   indicatorStyle,
   textStyle,
-  activityIndicatorColor = color['#ADADAD'],
+  activityIndicatorColor = color['#FFFFFF'],
   activityIndicatorSize = 'large',
   textContent = '',
 }: LoaderOverlayProps) {
@@ -36,8 +36,8 @@ export default function LoaderOverlay({
     <Modal
       supportedOrientations={['landscape', 'portrait']}
       isVisible={visible}
-      backdropColor={color['#0C1017']}
-      backdropOpacity={0.7}
+      backdropColor={color['#FFFFFF']}
+      backdropOpacity={0.15}
       animationIn="slideInUp"
       animationOut="slideOutDown">
       <View
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   textContent: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: color['#ADADAD'],
+    color: color['#FFFFFF'],
     marginTop: 8,
   },
 });

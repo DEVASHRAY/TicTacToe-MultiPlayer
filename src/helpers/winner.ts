@@ -11,22 +11,14 @@ const winnerMoves = [
   ['02', '11', '20'],
 ];
 
-let data: any = {};
-
 export function checkWinner({
   updatedBoardData,
   currentMove,
 }: CheckWinnerProps): boolean {
   let isWinner: boolean = false;
 
-  updatedBoardData.forEach(item => {
-    for (let key in item) {
-      data[key] = item[key];
-    }
-  });
-
   winnerMoves.forEach((item: string[]) => {
-    let isWinnerFound = checkIfKeysMatch(item, currentMove);
+    let isWinnerFound = checkIfKeysMatch(item, currentMove, updatedBoardData);
 
     if (isWinnerFound) {
       isWinner = true;
@@ -36,8 +28,12 @@ export function checkWinner({
   return isWinner;
 }
 
-function checkIfKeysMatch(keys: string[], currentMove = '') {
+function checkIfKeysMatch(
+  keys: string[],
+  currentMove = '',
+  updatedBoardData = {},
+) {
   return keys.every(key => {
-    return data[key] === currentMove;
+    return updatedBoardData[key] === currentMove;
   });
 }

@@ -14,12 +14,8 @@ export interface BoxStyle {
 }
 
 export interface GetBoxTypeProps {
-  cellData: {
-    [key: string]:
-      | USER_TYPE.USER_X
-      | USER_TYPE.USER_O
-      | BOARD_GRID_TYPE.DISABLED
-      | BOARD_GRID_TYPE.EMPTY;
+  boardData?: {
+    [key: string]: BOARD_GRID_TYPE | USER_TYPE;
   };
   id: number;
 }
@@ -30,4 +26,14 @@ export interface GridProps extends GetBoxTypeProps {
     | BOARD_GRID_TYPE.DISABLED
     | BOARD_GRID_TYPE.EMPTY;
   handleGridPress({}: GetBoxTypeProps): void;
+}
+
+export interface UpdateMoveProps {
+  roomId: string;
+  currentMove: USER_TYPE.USER_X | USER_TYPE.USER_O;
+  gridKey: string;
+}
+
+export interface FetchBoardDataProps {
+  roomId: string;
 }

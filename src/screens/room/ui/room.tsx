@@ -9,27 +9,45 @@ import React from 'react';
 import {Button} from '../../../components';
 import roomVM from '../room-vm/room-vm';
 import LoaderOverlay from '../../../components/loader-overlay';
+import {useNavigation} from '@react-navigation/native';
+import {AppNavigatorProps} from '../../../types/app-types';
+import {HandleCreateRoomParams} from '../interface/room-interface';
+import {ROOM_TYPE, USER_TYPE} from '../../../enums';
 
 export default function Room() {
+  const navigation = useNavigation<AppNavigatorProps>();
+
   const {showLoader, createRoom} = roomVM();
 
-  const handleCreateRoom = async () => {
-    let isRoomCreated = await createRoom();
-    console.log('isRoomCreated', isRoomCreated);
+  const handleRoom = async ({roomType}: HandleCreateRoomParams) => {
+    if (roomType === ROOM_TYPE.JOIN) {
+      navigation.navigate('JoinRoom');
+      return;
+    }
+
+    let roomId = await createRoom();
+    console.log('roomId', roomId);
+
+    if (roomId) {
+      navigation.navigate('GameBoard', {
+        roomId: String(roomId || ''),
+        userType: USER_TYPE.USER_X,
+      });
+    }
   };
 
   return (
     <SafeAreaView style={[styles.container]}>
-      <LoaderOverlay visible={false} />
+      <LoaderOverlay visible={showLoader} textContent="Please wait..." />
       <Button
         title="Create Room"
-        onPress={handleCreateRoom}
+        onPress={() => handleRoom({roomType: ROOM_TYPE.CREATE})}
         buttonStyle={[styles.button]}
       />
 
       <Button
         title="Join Room"
-        onPress={handleCreateRoom}
+        onPress={() => handleRoom({roomType: ROOM_TYPE.JOIN})}
         buttonStyle={[styles.button, styles.joinRoomButton]}
       />
     </SafeAreaView>
