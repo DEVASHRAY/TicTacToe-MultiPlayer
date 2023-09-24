@@ -115,13 +115,6 @@ export default function Board() {
           } = {},
         } = documentSnapshot?.data() || {};
 
-        console.log(
-          'playAgainplayAgain',
-          playAgain,
-          isUser1active,
-          isUser2active,
-        );
-
         setIsBothUsersActive(isUser1active && isUser2active);
 
         let isWinner = checkWinner({updatedBoardData: moves, currentMove});
@@ -129,15 +122,12 @@ export default function Board() {
         console.log('isWinner', isWinner);
 
         if (isWinner) {
-          console.log('GAMEOVERRRRRRRRRRRRRRRRRRRRR 1111111', isWinner);
-
           setGameOver(isWinner);
           setBoardData(moves);
           return;
         }
 
         if (playAgain) {
-          console.log('GAMEOVERRRRRRRRRRRRRRRRRRRRR 222222', false);
           setGameOver(false);
         }
 
@@ -154,10 +144,10 @@ export default function Board() {
       isBothUsersActive,
       disableMove,
       gameOver,
+      currentMove,
     });
 
     if (isDraw.length === 9) {
-      console.log('GAMEOVERRRRRRRRRRRRRRRRRRRRR 3333333', true);
       setGameOver(true);
     }
 
@@ -169,8 +159,6 @@ export default function Board() {
     const {key} = getRowColGridValue({id});
 
     let gridValue = boardData[key];
-
-    console.log('id', gameOver, gridValue !== BOARD_GRID_TYPE.EMPTY);
 
     if (gameOver || gridValue !== BOARD_GRID_TYPE.EMPTY) {
       return;

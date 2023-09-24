@@ -25,7 +25,6 @@ export default function boardVM() {
 
       const {_data}: any = boardDataRes || {};
 
-      console.log('boardDataRes', _data);
     } catch (error) {
       errorToast({
         toastTitle: 'Something went wrong.Please try after sometime.',

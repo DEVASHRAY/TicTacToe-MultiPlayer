@@ -1,4 +1,4 @@
-import {BOARD_GRID_TYPE, USER_TYPE} from '../../../enums';
+import {BOARD_GRID_TYPE, GAME_STATUS, USER_TYPE} from '../../../enums';
 
 export interface GetBoxStyleProps {
   boxType:
@@ -48,3 +48,12 @@ export interface UpdateUserActiveStatus {
   userType: string;
   activeStatus: boolean;
 }
+
+export type GameStatusText =
+  | GAME_STATUS.EMPTY
+  | GAME_STATUS.LOADING
+  | GAME_STATUS.PLEASE_WAIT
+  | GAME_STATUS.YOUR_TURN
+  | GAME_STATUS.YOU_LOST
+  | GAME_STATUS.YOU_WON
+  | GAME_STATUS.DRAW;

@@ -21,8 +21,6 @@ export default function roomVM() {
 
       const {_exists, _data}: any = seacrhRoomIdres || {};
 
-      console.log('_data', _data);
-
       const {isUser1active, isUser2active} = _data?.boardData || {};
 
       doesRoomExist = await new Promise((resolve, reject) => {
